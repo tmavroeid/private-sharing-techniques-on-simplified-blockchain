@@ -29,7 +29,7 @@ class BlockController {
             // Add your code here
             let blockheight = req.params.index;
             let block = await this.blockchain.getBlock(blockheight);
-            console.log(block)
+            //console.log(block)
             res.status(200).send(block)
 
         });

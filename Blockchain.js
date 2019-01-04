@@ -29,8 +29,10 @@ class Blockchain{
 						// for (var g=0;g<=array.length;g++){
 						// 	this.chain.push(JSON.parse(array[g].value));
 						// }
+            await removeDB();
+
 						if (array.length==0){
-                    await removeDB();
+
 		                let genesisBlock = new Block("First block in the chain - Genesis block");
 		                this.addBlock(genesisBlock);
 		         }else{

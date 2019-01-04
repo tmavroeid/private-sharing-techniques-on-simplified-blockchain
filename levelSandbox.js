@@ -5,6 +5,11 @@
 const level = require('level');
 const chainDB = './chaindata';
 const db = level(chainDB);
+const fs = require('fs-extra')
+
+
+
+
 //var count = 0;
 // Add data to levelDB with key/value pair
 function addLevelDBData(key,value){
@@ -15,7 +20,7 @@ function addLevelDBData(key,value){
               console.log('Block ' + key + ' submission failed', err);
               reject(err);
           }
-          console.log('skata'+key)
+          console.log('teomav'+key)
           console.log('Block ' + key + ' submission succeedded with data' + value);
           resolve(value);
       });
@@ -95,13 +100,9 @@ function getDBdataArray(){
 }
 
 function removeDB() {
-    db.createKeyStream()
-	   .on('data', function (key) {
-	    db.del(key, function (err) {
-		      if (err)
-		          console.log("Deletion error!!:(")
-	    });
-	})
+  fs.remove(chainDB, err => {
+    console.error(err)
+  })
 }
 
 /* ===== Testing ==============================================================|

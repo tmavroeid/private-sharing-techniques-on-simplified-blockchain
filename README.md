@@ -19,11 +19,23 @@ These instructions will get you a copy of the project up and running on your loc
 
 In this project, the blocks generated throughout the lifecycle of the blockchain are stored in a database and they are retrieved by the blockchain using javascript __Promises__. The functions, *addLevelDBData*, *getLevelDBData*, *addDataToLevelDB*, *getBlocksCount*, *getDBdataArray*, *removeDB* implemented inside the __levelSandbox.js__ file, are utilised for the purpose of interacting with the database and achieve persistence. These functions are exported with respect to be used by the functions residing in __Blockchain.js__. In __Blockchain.js__, the Blockchain constructor is deployed as well as the necessary functions to create the blockchain. The __Block.js__ file provides the Blocks' constructor; therefore, in this file the blocks' structure is defined. The __app.js__ file holds the structure of the web API and makes it available. The controller __BlockController.js__ contains the two endpoints creating and retrieving the blocks in the blockchain.
 
+### Prerequisites
+
+Installing Node and NPM is pretty straightforward using the installer package available from the (Node.js® web site)[https://nodejs.org/en/].
+Having NPM installed, several dependencies should be installed as described in the next section.
+
+### Configuring your project
+
+- Use NPM to initialize your project and install system specific software dependencies enclosed to package.json. Dependencies of this project are, crypto-js, level, fs-extra, express, body-parser, etc.
+```
+npm install
+```
+
 #### Key points in code
 
 The __BlockController.js__ holds the following code in order to deploy the _GET_ and _POST_ endpoints:
 
-_GET_ Endpoint:
+__*GET* Endpoint__: In this endpoint, the _index_ parameter is the number of block in the chain. Therefore, the _getBlock()_ function inside the __Blockchain.js__ file is called in order to retrieve the demanded block by the user.
 ```
 getBlockByIndex() {
 		this.app.get("/api/block/:index", async (req, res) => {
@@ -36,7 +48,7 @@ getBlockByIndex() {
 		});
 }
 ```
-_POST_ Endpoint:
+__*POST* Endpoint__: In this endpoint, the _addBlock()_ function inside the __Blockchain.js__ file is called in order to create a new block with the data *"Testing block with test string data"*, in its *body*.
 ```
 postNewBlock() {
 		this.app.post("/api/block", async (req, res) => {
@@ -51,30 +63,36 @@ postNewBlock() {
 		});
 }
 ```
-### Prerequisites
-
-Installing Node and NPM is pretty straightforward using the installer package available from the (Node.js® web site)[https://nodejs.org/en/].
-Having NPM installed, several dependencies should be installed as described in the next section.
-
-### Configuring your project
-
-- Use NPM to initialize your project and install system specific software dependencies enclosed to package.json.
-```
-npm install
-```
-
-
 ## Usage
 
 To test code follow the steps:
 
 1: Open a command prompt or shell terminal after installing node.js and the dependencies.
 
-2: Enter the following command in order to instantiate the blockchain and deploy the web API.
+2: As defined in the code of __app.js__, the API will be deployed at port 8000.
+```
+initExpress() {
+	this.app.set("port", 8002);
+}
+```
+3: Enter the following command in order to instantiate the blockchain and deploy the web API.
 ```
 node app.js
 ```
 
+
+
 ## Testing
 
 Having deployed the web API, it's time to test the function of the endpoints. For the purpose of testing them it can be used either __Postman__ or __Curl__.
+
+In order to test the _GET_ endpoint with the __Postman__, the following URL should be invoked:
+```
+http://localhost:8000/api/block/index
+```
+The _index_ should be replaced by a number, 0, 1, 2, 3, etc.
+
+In order to test the _POST_ endpoint with the __Postman__, the following URL should be invoked in order to create the next block in the chain:
+```
+http://localhost:8000/api/block
+```
