@@ -35,7 +35,7 @@ npm install
 
 The __BlockController.js__ holds the following code in order to deploy the _GET_ and _POST_ endpoints:
 
-__*GET* Endpoint__: In this endpoint, the _index_ parameter is the number of block in the chain. Therefore, the _getBlock()_ function inside the __Blockchain.js__ file is called in order to retrieve the demanded block by the user.
+__*GET* Endpoint:__ In this endpoint, the _index_ parameter is the number of block in the chain. Therefore, the _getBlock()_ function inside the __Blockchain.js__ file is called in order to retrieve the demanded block by the user.
 ```
 getBlockByIndex() {
 		this.app.get("/api/block/:index", async (req, res) => {
@@ -48,14 +48,19 @@ getBlockByIndex() {
 		});
 }
 ```
-__*POST* Endpoint__: In this endpoint, the _addBlock()_ function inside the __Blockchain.js__ file is called in order to create a new block with the data *"Testing block with test string data"*, in its *body*.
+__*POST* Endpoint:__ In this endpoint, the _addBlock()_ function inside the __Blockchain.js__ file is called in order to create a new block with the data *"Testing block with test string data"*, in its *body*. The _req.body.data_, indicates that the _POST_ request should contain a key/value pair, where the name of the _key_ should be ___data___. The value of the ___data___ key will be the body of the block.
 ```
 postNewBlock() {
-		this.app.post("/api/block", async (req, res) => {
+		this.app.post("/block", async (req, res) => {
 			try{
 				// Add your code here
-				let block = await this.blockchain.addBlock(new Block(`Testing block with test string data`));
-				res.status(200).send(JSON.parse(block));
+				let data = req.body.data;
+				if(data.length>0){
+					let block = await this.blockchain.addBlock(new Block(data));
+					res.status(200).send(JSON.parse(block));
+				}else{
+					res.status(400).send("POST Request without data on the body!");
+				}
 			}catch(err){
 				console.log(err);
 
@@ -84,15 +89,17 @@ node app.js
 
 ## Testing
 
-Having deployed the web API, it's time to test the function of the endpoints. For the purpose of testing them it can be used either __Postman__ or __Curl__.
+Having deployed the web API, it's time to test the function of the endpoints. For the purpose of testing them it can be used either __POSTman__ or __Curl__.
 
+#### - POSTman
 In order to test the _GET_ endpoint with the __Postman__, the following URL should be invoked:
 ```
-http://localhost:8000/api/block/index
+http://localhost:8000/block/:index
 ```
-The _index_ should be replaced by a number, 0, 1, 2, 3, etc.
+The _:index_ should be replaced by a number, 0, 1, 2, 3, etc.
 
 In order to test the _POST_ endpoint with the __Postman__, the following URL should be invoked in order to create the next block in the chain:
 ```
-http://localhost:8000/api/block
+http://localhost:8000/block
 ```
+The type of body of the request should be chosen to be *application/x-www-form-urlencoded*. Therefore, a key/value should be used. The _key_ name should be ___data___ and the _value_ should be a string. In case that the _POST_ request is sent without a string or text in the body then there won't be created a new block.
