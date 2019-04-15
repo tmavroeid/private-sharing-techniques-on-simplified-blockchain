@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Upload Files</title>
+</head>
+
+<body>
+    <!--<form method="post" enctype="multipart/form-data">
+        <input type="file" name="files[]" multiple>
+        <input type="submit" value="Upload File" name="submit">
+    </form>-->
+    <form method="POST" action="/submit-form" enctype="multipart/form-data"> <!--if I do not want to upload files, then I am not using multipart/form-data, if I remove multipart/form-data then the field option in the node.js will take it and handle it-->
+      <input type="file" name="document" /><br>
+      <input type="submit" />
+    </form>
+
+</body>
+
+</html>

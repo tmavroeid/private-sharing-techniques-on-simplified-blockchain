@@ -1,5 +1,6 @@
 const SHA256 = require('crypto-js/sha256');
 const Blockchain = require('./Blockchain');
+const formidable = require('formidable')
 const Block = require('./Block');
 const blockchain = new Blockchain();
 
@@ -19,6 +20,8 @@ class BlockController {
         this.blockchain = blockchain;
         this.getBlockByIndex();
         this.postNewBlock();
+        this.hashFile();
+        this.validateFileIdentity();
     }
 
     /**
@@ -54,6 +57,93 @@ class BlockController {
 
           }
         });
+    }
+
+    hashFile(){
+      //Handle the upload of a file
+      this.app.post('/submit-form', (req, res) => {
+        try{
+          var form = new formidable.IncomingForm();
+          var block, fileHash, response = "";
+          form.hash = 'sha256';
+          form.parse(req).on('field', (name, field) => {
+            console.log('Field', name, field)
+          }).on('file', async (name, file) => {
+            try{
+              console.log('Uploaded file', name, file)
+
+              console.log(file.hash);
+              block = await this.blockchain.addBlock(new Block(file.hash));
+              response = JSON.parse(block);
+              console.log(response);
+              console.log("Success storing a hash of the file!");
+            }catch(err){
+              console.log(err);
+            }
+          }).on('progress', function(bytesReceived, bytesExpected) {
+            var percent_complete = (bytesReceived / bytesExpected) * 100;
+            console.log(percent_complete.toFixed(2));
+          }).on('aborted', () => {
+              console.error('Request aborted by the user')
+          }).on('error', (err) => {
+              console.error('Error', err)
+              throw err
+          }).on('end', () => {
+              res.status(200).send(response);//We put the response here, in order to avoid the error "Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client"
+              res.end()
+          })
+        }catch(err){
+          console.log(err);
+        }
+      });
+
+
+    }
+
+    validateFileIdentity(){
+      //Hndle the upload of a file
+      this.app.post('/validate-file', (req, res) => {
+        try{
+          var form = new formidable.IncomingForm();
+          var block, blockheight, storedHash, fileHash;
+          form.hash = 'sha256'
+          form.parse(req).on('field', (name, field) => {
+            if(name == "blockheight"){
+              blockheight = field;//parseInt(field, 10);
+            }
+            //console.log('Field', name, field);
+            console.log(blockheight);
+          }).on('file', async (name, file) => {
+            try{
+              console.log(file);
+              block = await this.blockchain.getBlockbyHeight(blockheight);
+              console.log(block);
+              storedHash = block.body;
+              fileHash = file.hash
+              if(fileHash===storedHash){
+                //console.log('Uploaded file', name, file)
+                console.log("This is a legit file!");
+              }else{
+                console.log("This is not a legit file")
+              }
+            }catch(err){
+              console.log(err);
+            }
+          }).on('progress', function(bytesReceived, bytesExpected) {
+            var percent_complete = (bytesReceived / bytesExpected) * 100;
+            console.log(percent_complete.toFixed(2));
+          }).on('aborted', () => {
+            console.error('Request aborted by the user')
+          }).on('error', (err) => {
+            console.error('Error', err);
+            throw err
+          }).on('end', () => {
+            res.end();
+          })
+        }catch(err){
+          console.log(err);
+        }
+      });
     }
 
     /**

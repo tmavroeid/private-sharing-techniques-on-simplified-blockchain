@@ -2,7 +2,7 @@
 const express = require("express");
 //Importing BodyParser.js module
 const bodyParser = require("body-parser");
-
+const formidable = require('formidable')
 /**
  * Class Definition for the REST API
  */
@@ -44,11 +44,21 @@ class BlockAPI {
     /**
      * Starting the REST Api application
      */
+
 	start() {
 		let self = this;
+    //ROUTES
+    this.app.get('/', function(req, res){
+      res.sendFile(__dirname + '/index.html');
+    });
+    this.app.get('/validate', function(req, res){
+      res.sendFile(__dirname + '/validatefile.html');
+    });
+    //DEPLOY SERVER
 		this.app.listen(this.app.get("port"), () => {
 			console.log(`Server Listening for port: ${self.app.get("port")}`);
 		});
+
 
 	}
 

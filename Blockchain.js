@@ -74,6 +74,11 @@ class Blockchain{
 			return JSON.parse(block)
 	}
 
+  async getBlockbyHeight(height){
+    // return block object from the database
+    let block = await this.getBlock(height);
+    return block;
+  }
     // validate block
     async validateBlock(blockHeight){
       // retrieve block object
