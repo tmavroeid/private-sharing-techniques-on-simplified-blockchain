@@ -12,8 +12,7 @@ The allowed operations to be performed on top of the blockchain through the API 
 
 This blockchain implements certain private sharing techniques such as:
 
-- hashing of documents,
-- proof-of-existence for documents
+- documents' validation through hashing
 
 
 ## Getting Started
@@ -61,4 +60,11 @@ http://localhost:8000/block
 The type of body of the request should be chosen to be *application/x-www-form-urlencoded*. Therefore, a key/value should be used. The _key_ name should be ___data___ and the _value_ should be a string. In case that the _POST_ request is sent without a string or text in the body then there won't be created a new block.
 
 #### Testing the Private Sharing Techniques through a Browser
-1.
+1. In order to test the validation of documents, invoke the following URL through a browser:
+```
+http://localhost:8000/
+```
+2. Then, invoke the following URL in order to validate the existence or legitimacy of a document by passing the ___block height___ of the original block where the hash of the document that we want to validate, is already stored and the ___document___.
+```
+http://localhost:8000/validate
+```
