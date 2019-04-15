@@ -32,7 +32,7 @@ To test the functionalities of this project proceed with the following steps:
 2: As defined in the code of __app.js__, the API will be deployed at port 8000.
 ```
 initExpress() {
-	this.app.set("port", 8002);
+	this.app.set("port", 8000);
 }
 ```
 3: Enter the following command in order to instantiate the blockchain and deploy the web API.
